@@ -4,53 +4,48 @@ local range = 10
 
 
 --// Variables \\--
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Character = Player.Character
+local Humanoid = Character and Character:FindFirstChild("Humanoid")
 -------------------
 
 
---// Player Variables \\--
-local player = Players.LocalPlayer
-local Character = player.Character
-local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
-local Humanoid = Character and Character:FindFirstChild("Humanoid")
----------------------------
-
-
 --// Notification \\--
-function Notify()
-	StarterGui:SetCore("SendNotification", {Title = "C.Bring", Text = "Reach"})
+--[[function Notify()
+	StarterGui:SetCore("SendNotification", {Title = "C:Bring()", Text = "Reach"})
 end
-Notify()
+Notify()]]
 ----------------------
 
 
---// Script \\--
+
+------------------------// Script \\------------
+
 RunService.Stepped:Connect(function()
-	for _, p in pairs(Players:GetPlayers()) do
-		if p.Name ~= player.Name and Humanoid and Humanoid.Health ~= 0 then
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
+
+			local Tool = Player.Character:FindFirstChildWhichIsA("Tool")
+			local Handle = Tool and Tool:FindFirstChild("Handle")
 			
 			local pCharacter = p.Character
-			local pHumanoidRootPart = pCharacter:FindFirstChild("HumanoidRootPart")
-			
-			
-			local Distance = (HumanoidRootPart.Position - pHumanoidRootPart.Position).Magnitude
-			if Distance <= range then
-				
-				local Tool = player:FindFirstChildOfClass("Tool") and Character:FindFirstChildOfClass("Tool")
-				local Handle = Tool and Tool:FindFirstChild("Handle")
-				
-				local limbs = {
-					RightArm = pCharacter:FindFirstChild("Right Arm"),
-					LeftArm = pCharacter:FindFirstChild("Left Arm"),
-					RightLeg = pCharacter:FindFirstChild("Right Leg"),
-					LeftLeg = pCharacter:FindFirstChild("Left Leg")
-				}
-				
-				if Tool and Handle and limbs then
+
+			if Tool and Handle and pCharacter and pCharacter:FindFirstChild("HumanoidRootPart") then
+				local distance = (Character.HumanoidRootPart.Position - pCharacter.HumanoidRootPart.Position).Magnitude
+				if distance <= range then
+					
 					Tool:Activate()
 					
+					local limbs = {
+						pCharacter:FindFirstChild("Left Arm"),
+						pCharacter:FindFirstChild("Right Arm"),
+						pCharacter:FindFirstChild("Left Leg"),
+						pCharacter:FindFirstChild("Right Leg")
+					}
+
 					for _, limb in ipairs(limbs) do
 						if limb then
 							limb:BreakJoints()
@@ -63,3 +58,5 @@ RunService.Stepped:Connect(function()
 		end
 	end
 end)
+
+----------------------------------------------
