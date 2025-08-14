@@ -1,49 +1,57 @@
---// Settings \--
+--// Settings \\--
 local range = 10
+------------------
 
 
---// Variables \--
+--// Variables \\--
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
-local player = Players.LocalPlayer
+-------------------
 
+
+--// Player Variables \\--
+local player = Players.LocalPlayer
+local Character = player.Character
+local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+local Humanoid = Character and Character:FindFirstChild("Humanoid")
+---------------------------
+
+
+--// Notification \\--
 function Notify()
-	StarterGui:SetCore("SendNotification", {Title = "C-Bring", Text = "Reach"})
+	StarterGui:SetCore("SendNotification", {Title = "C.Bring", Text = "Reach"})
 end
 Notify()
+----------------------
 
---// Script \--
+
+--// Script \\--
 RunService.Stepped:Connect(function()
 	for _, p in pairs(Players:GetPlayers()) do
-		if p.Name ~= player.Name then
+		if p.Name ~= player.Name and Humanoid and Humanoid.Health ~= 0 then
 			
-			local pchar = p.Character
-			local phrp = pchar and pchar:FindFirstChild("HumanoidRootPart")
-
-			local char = player.Character
-			local hrp = char:WaitForChild("HumanoidRootPart")
-
-
-			local limbs = {
-				RightArm = pchar:FindFirstChild("Right Arm"),
-				LeftArm = pchar:FindFirstChild("Left Arm"),
-				RightLeg = pchar:FindFirstChild("Right Leg"),
-				LeftLeg = pchar:FindFirstChild("Left Leg"),
-				--Torso = pchar:FindFirstChild("Torso")
-			}
-
-
-			local Distance = (hrp.Position - phrp.Position).Magnitude
+			local pCharacter = p.Character
+			local pHumanoidRootPart = pCharacter:FindFirstChild("HumanoidRootPart")
+			
+			
+			local Distance = (HumanoidRootPart.Position - pHumanoidRootPart.Position).Magnitude
 			if Distance <= range then
 				
-				local tool = char and char:FindFirstChildOfClass("Tool")
-				local Handle = tool and tool:FindFirstChild("Handle")
+				local Tool = player:FindFirstChildOfClass("Tool") and Character:FindFirstChildOfClass("Tool")
+				local Handle = Tool and Tool:FindFirstChild("Handle")
 				
-				if tool and Handle then
-					tool:Activate()
+				local limbs = {
+					RightArm = pCharacter:FindFirstChild("Right Arm"),
+					LeftArm = pCharacter:FindFirstChild("Left Arm"),
+					RightLeg = pCharacter:FindFirstChild("Right Leg"),
+					LeftLeg = pCharacter:FindFirstChild("Left Leg")
+				}
+				
+				if Tool and Handle and limbs then
+					Tool:Activate()
 					
-					for _, limb in ipairs(limbs) do 
+					for _, limb in ipairs(limbs) do
 						if limb then
 							limb:BreakJoints()
 							limb.CFrame = Handle.CFrame
