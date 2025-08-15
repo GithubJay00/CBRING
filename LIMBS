@@ -14,10 +14,10 @@ local Humanoid = Character and Character:FindFirstChild("Humanoid")
 
 
 --// Notification \\--
---[[function Notify()
+function Notify()
 	StarterGui:SetCore("SendNotification", {Title = "C:Bring()", Text = "Reach"})
 end
-Notify()]]
+Notify()
 ----------------------
 
 
