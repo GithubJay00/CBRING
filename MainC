@@ -33,14 +33,12 @@ end
 
 ----------------
 
-
+Notify(tostring(Settings.Toggled))
 
 --{{ Script }}--
 
 RunService.Stepped:Connect(function()
 	if Settings.Toggled then
-		
-		Notify(tostring(Settings.Toggled))
 		
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= Player.Name then
