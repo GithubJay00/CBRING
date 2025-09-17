@@ -1,56 +1,88 @@
---// Settings \\--
-local range = 20
+--{{ Settings }}--
+
+getegenv().Settings = {
+	
+	Range = 20 ,
+	
+	Toggled = true ,
+	
+	Trans = 0
+	
+}
+
 ------------------
 
 
---// Variables \\--
+
+--{{ Variables }}--
+
+local RunService  = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
-local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
-local Character = Player.Character
-local Humanoid = Character and Character:FindFirstChild("Humanoid")
+
 -------------------
 
 
---// Notification \\--
-function Notify()
-	StarterGui:SetCore("SendNotification", {Title = "C:Bring()", Text = "Reach"})
+
+--{{ Notify }}--
+
+function Notify(info)
+	StarterGui:SetCore("SendNotification", {Title = "C:Bring()", Text = info})
 end
-Notify()
-----------------------
+
+----------------
 
 
 
-------------------------// Script \\------------
+--{{ Script }}--
 
 RunService.Stepped:Connect(function()
-	for _, p in ipairs(Players:GetPlayers()) do
-		if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
+	if Settings.Toggled then
+		
+		Notify(tostring(Setting.Toggled))
+		
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= Player.Name then
+				
+				local qChar = p.Character
+				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+				local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
 
-			local Tool = Player:FindFirstChildOfClass("Tool") or Character:FindFirstChildWhichIsA("Tool")
-			local Handle = Tool and Tool:FindFirstChild("Handle")
-
-			local pCharacter = p.Character
-
-			if Tool and Handle and pCharacter and pCharacter:FindFirstChild("HumanoidRootPart") then
-				local distance = (Character.HumanoidRootPart.Position - pCharacter.HumanoidRootPart.Position).Magnitude
-				if distance <= range then
-
-					Tool:Activate()
-
-					local limbs = {
-						pCharacter:FindFirstChild("Left Arm"),
-						pCharacter:FindFirstChild("Right Arm"),
-						pCharacter:FindFirstChild("Left Leg"),
-						pCharacter:FindFirstChild("Right Leg")
-					}
-
-					for _, limb in ipairs(limbs) do
-						if limb then
-							limb:BreakJoints()
-							limb.CFrame = Handle.CFrame
-							limb.Transparency = 1
+				local Char = Player.Character
+				local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
+				local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+				
+				if HM and qHM then
+					if HM.Health > 0 and qHM.Health > 0 then
+						
+						local limbs = {
+							RightArm = qChar:FindFirstChild("Right Arm"),
+							LeftArm = qChar:FindFirstChild("Left Arm"),
+							RightLeg = qChar:FindFirstChild("Right Leg"),
+							LeftLeg = qChar:FindFirstChild("Left Leg"),
+							Torso = qChar:FindFirstChild("Torso"),
+							HumanoidRootPart = qChar:FindFirstChild("HumanoidRootPart"),
+							Head = qChar:FindFirstChild("Head")
+						}
+						
+						local Distance = (HRP.Position - qHRP.Position).Magnitude
+						if Distance <= Settings.Range then
+							
+							local tool = Char and Char:FindFirstChildOfClass("Tool")
+							local Handle = tool and tool:FindFirstChild("Handle")
+							
+							if tool and Handle then
+								
+								tool:Activate()
+								local Qhrp = limbs.HumanoidRootPart
+								
+								if Qhrp then
+									Qhrp:BreakJoints()
+									Qhrp.CFrame = Handle.CFrame
+									Qhrp.Transparency = Settings.Trans
+								end
+							end
 						end
 					end
 				end
@@ -59,4 +91,4 @@ RunService.Stepped:Connect(function()
 	end
 end)
 
-----------------------------------------------
+----------------
